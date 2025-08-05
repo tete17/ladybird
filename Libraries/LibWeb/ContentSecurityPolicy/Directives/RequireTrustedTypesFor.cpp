@@ -16,6 +16,11 @@
 
 namespace Web::ContentSecurityPolicy::Directives {
 
+#define __ENUMERATE_REQUIRE_KEYWORD_TRUSTED_TYPES_FOR(name, value) \
+    FlyString name = value##_fly_string;
+ENUMERATE_REQUIRE_KEYWORD_TRUSTED_TYPES_FOR
+#undef __ENUMERATE_REQUIRE_KEYWORD_TRUSTED_TYPES_FOR
+
 GC_DEFINE_ALLOCATOR(RequireTrustedTypesFor);
 
 RequireTrustedTypesFor::RequireTrustedTypesFor(String name, Vector<String> value)

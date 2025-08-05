@@ -11,6 +11,7 @@
 #include <LibWeb/Bindings/HTMLScriptElementPrototype.h>
 #include <LibWeb/Bindings/Intrinsics.h>
 #include <LibWeb/ContentSecurityPolicy/BlockingAlgorithms.h>
+#include <LibWeb/ContentSecurityPolicy/Directives/RequireTrustedTypesFor.h>
 #include <LibWeb/DOM/Document.h>
 #include <LibWeb/DOM/Event.h>
 #include <LibWeb/DOM/ShadowRoot.h>
@@ -24,6 +25,7 @@
 #include <LibWeb/Infra/CharacterTypes.h>
 #include <LibWeb/Infra/Strings.h>
 #include <LibWeb/MimeSniff/MimeType.h>
+#include <LibWeb/TrustedTypes/TrustedTypePolicy.h>
 
 namespace Web::HTML {
 
@@ -637,6 +639,26 @@ void HTMLScriptElement::unmark_as_already_started(Badge<DOM::Range>)
 void HTMLScriptElement::unmark_as_parser_inserted(Badge<DOM::Range>)
 {
     m_parser_document = nullptr;
+}
+
+// https://www.w3.org/TR/trusted-types/#the-text-idl-attribute
+WebIDL::ExceptionOr<void> HTMLScriptElement::set_text(TrustedTypes::TrustedScriptOrString text)
+{
+    // 1. Let value be the result of calling Get Trusted Type compliant string with
+    //    TrustedScript, this’s relevant global object, the given value, HTMLScriptElement text, and script.
+    auto const value = TRY(get_trusted_type_compliant_string(
+        TrustedTypes::TrustedTypeName::TrustedScript,
+        HTML::relevant_global_object(*this),
+        text,
+        TrustedTypes::InjectionSink::HTMLScriptElementtext,
+        ContentSecurityPolicy::Directives::Script.to_string()));
+
+    // 2. Set this’s script text value to the given value.
+    m_string_text = value;
+
+    // 3. String replace all with the given value within this.
+    string_replace_all(value);
+    return {};
 }
 
 // https://html.spec.whatwg.org/multipage/scripting.html#dom-script-async
