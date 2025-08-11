@@ -152,9 +152,9 @@ void EditingHostManager::handle_delete(DeleteDirection direction)
 
     auto editing_result = [&] {
         if (direction == DeleteDirection::Backward)
-            return m_document->exec_command(Editing::CommandNames::delete_, false, {});
+            return m_document->exec_command(Editing::CommandNames::delete_, false, ""_utf16);
         if (direction == DeleteDirection::Forward)
-            return m_document->exec_command(Editing::CommandNames::forwardDelete, false, {});
+            return m_document->exec_command(Editing::CommandNames::forwardDelete, false, ""_utf16);
         VERIFY_NOT_REACHED();
     }();
 
@@ -173,9 +173,9 @@ EventResult EditingHostManager::handle_return_key(FlyString const& ui_input_type
     // agent must call execCommand("insertlinebreak") on the relevant document.
     auto editing_result = [&] {
         if (ui_input_type == UIEvents::InputTypes::insertParagraph)
-            return m_document->exec_command(Editing::CommandNames::insertParagraph, false, {});
+            return m_document->exec_command(Editing::CommandNames::insertParagraph, false, ""_utf16);
         if (ui_input_type == UIEvents::InputTypes::insertLineBreak)
-            return m_document->exec_command(Editing::CommandNames::insertLineBreak, false, {});
+            return m_document->exec_command(Editing::CommandNames::insertLineBreak, false, ""_utf16);
         VERIFY_NOT_REACHED();
     }();
 
