@@ -189,9 +189,6 @@ WebIDL::ExceptionOr<JS::Value> TrustedTypePolicy::get_trusted_type_policy_value(
 // https://www.w3.org/TR/trusted-types/#process-value-with-a-default-policy-algorithm
 WebIDL::ExceptionOr<JS::Value> process_value_with_a_default_policy(TrustedTypeName trusted_type_name, JS::Object& global, Variant<GC::Root<TrustedHTML>, GC::Root<TrustedScript>, GC::Root<TrustedScriptURL>, Utf16String> input, InjectionSink sink)
 {
-    auto& vm = global.vm();
-    auto& realm = *vm.current_realm();
-
     // 1. Let defaultPolicy be the value of global’s trusted type policy factory’s default policy.
     auto const& default_policy = as<HTML::WindowOrWorkerGlobalScopeMixin>(global).trusted_types()->default_policy();
 
@@ -200,6 +197,9 @@ WebIDL::ExceptionOr<JS::Value> process_value_with_a_default_policy(TrustedTypeNa
     // Ref: https://github.com/w3c/trusted-types/issues/595
     if (!default_policy)
         return JS::js_null();
+
+    auto& vm = global.vm();
+    auto& realm = default_policy->realm();
 
     // 2. Let policyValue be the result of executing Get Trusted Type policy value, with the following arguments:
     //    policy:

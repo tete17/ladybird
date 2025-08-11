@@ -20,7 +20,7 @@
 namespace Web::DOM {
 
 // https://w3c.github.io/editing/docs/execCommand/#execcommand()
-WebIDL::ExceptionOr<bool> Document::exec_command(FlyString const& command, [[maybe_unused]] bool show_ui, Variant<GC::Root<TrustedTypes::TrustedHTML>, Utf16String, Empty> const& value)
+WebIDL::ExceptionOr<bool> Document::exec_command(FlyString const& command, [[maybe_unused]] bool show_ui, TrustedTypes::TrustedHTMLOrString const& value)
 {
     Utf16String compliant_string;
     if (command.equals_ignoring_ascii_case(Editing::CommandNames::insertHTML)) {
