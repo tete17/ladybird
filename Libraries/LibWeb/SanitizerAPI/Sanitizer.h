@@ -36,6 +36,9 @@ private:
 
     // https://wicg.github.io/sanitizer-api/#sanitizer-set-a-configuration
     bool set_a_configuration(Bindings::SanitizerConfig const&, AllowCommentsAndDataAttributes);
+
+    // https://wicg.github.io/sanitizer-api/#sanitizer-configuration
+    Bindings::SanitizerConfig m_configuration;
 };
 
 }
