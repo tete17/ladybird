@@ -1,0 +1,72 @@
+Harness status: OK
+
+Found 66 tests
+
+30 Pass
+36 Fail
+Pass	idl_test setup
+Pass	idl_test validation
+Pass	Partial interface Element: original interface defined
+Pass	Partial interface Element: member names are unique
+Pass	Partial interface ShadowRoot: original interface defined
+Pass	Partial interface ShadowRoot: member names are unique
+Pass	Partial interface Document: original interface defined
+Pass	Partial interface Document: member names are unique
+Pass	Partial interface Document[2]: member names are unique
+Pass	Partial interface Element[2]: member names are unique
+Pass	Partial interface ShadowRoot[2]: member names are unique
+Pass	Partial interface Document[3]: member names are unique
+Pass	Document includes GlobalEventHandlers: member names are unique
+Pass	Document includes NonElementParentNode: member names are unique
+Pass	DocumentFragment includes NonElementParentNode: member names are unique
+Pass	Document includes DocumentOrShadowRoot: member names are unique
+Pass	ShadowRoot includes DocumentOrShadowRoot: member names are unique
+Pass	Document includes ParentNode: member names are unique
+Pass	DocumentFragment includes ParentNode: member names are unique
+Pass	Element includes ParentNode: member names are unique
+Pass	Element includes NonDocumentTypeChildNode: member names are unique
+Pass	Element includes ChildNode: member names are unique
+Pass	Element includes Slottable: member names are unique
+Pass	Document includes XPathEvaluatorBase: member names are unique
+Pass	Sanitizer interface: existence and properties of interface object
+Pass	Sanitizer interface object length
+Pass	Sanitizer interface object name
+Pass	Sanitizer interface: existence and properties of interface prototype object
+Pass	Sanitizer interface: existence and properties of interface prototype object's "constructor" property
+Pass	Sanitizer interface: existence and properties of interface prototype object's @@unscopables property
+Fail	Sanitizer interface: operation get()
+Fail	Sanitizer interface: operation allowElement(SanitizerElementWithAttributes)
+Fail	Sanitizer interface: operation removeElement(SanitizerElement)
+Fail	Sanitizer interface: operation replaceElementWithChildren(SanitizerElement)
+Fail	Sanitizer interface: operation allowProcessingInstruction(SanitizerPI)
+Fail	Sanitizer interface: operation removeProcessingInstruction(SanitizerPI)
+Fail	Sanitizer interface: operation allowAttribute(SanitizerAttribute)
+Fail	Sanitizer interface: operation removeAttribute(SanitizerAttribute)
+Fail	Sanitizer interface: operation setComments(boolean)
+Fail	Sanitizer interface: operation setDataAttributes(boolean)
+Fail	Sanitizer interface: operation removeUnsafe()
+Fail	Sanitizer must be primary interface of new Sanitizer({})
+Fail	Stringification of new Sanitizer({})
+Fail	Sanitizer interface: new Sanitizer({}) must inherit property "get()" with the proper type
+Fail	Sanitizer interface: new Sanitizer({}) must inherit property "allowElement(SanitizerElementWithAttributes)" with the proper type
+Fail	Sanitizer interface: calling allowElement(SanitizerElementWithAttributes) on new Sanitizer({}) with too few arguments must throw TypeError
+Fail	Sanitizer interface: new Sanitizer({}) must inherit property "removeElement(SanitizerElement)" with the proper type
+Fail	Sanitizer interface: calling removeElement(SanitizerElement) on new Sanitizer({}) with too few arguments must throw TypeError
+Fail	Sanitizer interface: new Sanitizer({}) must inherit property "replaceElementWithChildren(SanitizerElement)" with the proper type
+Fail	Sanitizer interface: calling replaceElementWithChildren(SanitizerElement) on new Sanitizer({}) with too few arguments must throw TypeError
+Fail	Sanitizer interface: new Sanitizer({}) must inherit property "allowProcessingInstruction(SanitizerPI)" with the proper type
+Fail	Sanitizer interface: calling allowProcessingInstruction(SanitizerPI) on new Sanitizer({}) with too few arguments must throw TypeError
+Fail	Sanitizer interface: new Sanitizer({}) must inherit property "removeProcessingInstruction(SanitizerPI)" with the proper type
+Fail	Sanitizer interface: calling removeProcessingInstruction(SanitizerPI) on new Sanitizer({}) with too few arguments must throw TypeError
+Fail	Sanitizer interface: new Sanitizer({}) must inherit property "allowAttribute(SanitizerAttribute)" with the proper type
+Fail	Sanitizer interface: calling allowAttribute(SanitizerAttribute) on new Sanitizer({}) with too few arguments must throw TypeError
+Fail	Sanitizer interface: new Sanitizer({}) must inherit property "removeAttribute(SanitizerAttribute)" with the proper type
+Fail	Sanitizer interface: calling removeAttribute(SanitizerAttribute) on new Sanitizer({}) with too few arguments must throw TypeError
+Fail	Sanitizer interface: new Sanitizer({}) must inherit property "setComments(boolean)" with the proper type
+Fail	Sanitizer interface: calling setComments(boolean) on new Sanitizer({}) with too few arguments must throw TypeError
+Fail	Sanitizer interface: new Sanitizer({}) must inherit property "setDataAttributes(boolean)" with the proper type
+Fail	Sanitizer interface: calling setDataAttributes(boolean) on new Sanitizer({}) with too few arguments must throw TypeError
+Fail	Sanitizer interface: new Sanitizer({}) must inherit property "removeUnsafe()" with the proper type
+Fail	Document interface: operation parseHTML(DOMString, optional SetHTMLOptions)
+Fail	ShadowRoot interface: operation setHTML(DOMString, optional SetHTMLOptions)
+Fail	Element interface: operation setHTML(DOMString, optional SetHTMLOptions)
