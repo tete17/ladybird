@@ -24,6 +24,9 @@ public:
     static WebIDL::ExceptionOr<GC::Ref<Sanitizer>> construct_impl(JS::Realm&, Variant<Bindings::SanitizerConfig, Bindings::SanitizerPresets> configuration);
     virtual ~Sanitizer() override = default;
 
+    // https://wicg.github.io/sanitizer-api/#sanitizer-set-comments
+    bool set_comments(bool);
+
 private:
     explicit Sanitizer(JS::Realm&);
 

@@ -37,6 +37,25 @@ WebIDL::ExceptionOr<GC::Ref<Sanitizer>> Sanitizer::construct_impl(JS::Realm& rea
     return result;
 }
 
+// https://wicg.github.io/sanitizer-api/#dom-sanitizer-setcomments
+bool Sanitizer::set_comments(bool allow)
+{
+    // 1. Let configuration be this’s configuration.
+    auto& configuration = m_configuration;
+
+    // 2. TODO Assert: configuration is valid.
+
+    // 3. If configuration["comments"] exists and configuration["comments"] equals allow, then return false;
+    if (configuration.comments == allow)
+        return false;
+
+    // 4. Set configuration["comments"] to allow.
+    m_configuration.comments = allow;
+
+    // 5. Return true.
+    return true;
+}
+
 Sanitizer::Sanitizer(JS::Realm& realm)
     : PlatformObject(realm)
 {

@@ -17,7 +17,7 @@ interface Sanitizer {
     [FIXME] boolean removeProcessingInstruction(SanitizerPI pi);
     [FIXME] boolean allowAttribute(SanitizerAttribute attribute);
     [FIXME] boolean removeAttribute(SanitizerAttribute attribute);
-    [FIXME] boolean setComments(boolean allow);
+    boolean setComments(boolean allow);
     [FIXME] boolean setDataAttributes(boolean allow);
 
     // Remove markup that executes script.
