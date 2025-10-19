@@ -15,17 +15,20 @@ namespace Web::SanitizerAPI {
 GC_DEFINE_ALLOCATOR(Sanitizer);
 
 // https://wicg.github.io/sanitizer-api/#dom-sanitizer-constructor
-WebIDL::ExceptionOr<GC::Ref<Sanitizer>> Sanitizer::construct_impl(JS::Realm& realm, Bindings::SanitizerPresets configuration)
+WebIDL::ExceptionOr<GC::Ref<Sanitizer>> Sanitizer::construct_impl(JS::Realm& realm, Variant<Bindings::SanitizerConfig, Bindings::SanitizerPresets> configuration)
 {
-    // 1. TODO If configuration is a SanitizerPresets string, then:
-    if (true) {
+    // 1. If configuration is a SanitizerPresets string, then:
+    if (configuration.has<Bindings::SanitizerPresets>()) {
         // 1. Assert: configuration is default.
+        VERIFY(configuration.get<Bindings::SanitizerPresets>() == Bindings::SanitizerPresets::Default);
+
         // 2. TODO Set configuration to the built-in safe default configuration.
+        configuration = Bindings::SanitizerConfig();
     }
     auto result = realm.create<Sanitizer>(realm);
 
     // 2. Let valid be the return value of set a configuration with configuration and true on this.
-    auto const valid = result->set_a_configuration(configuration, AllowCommentsAndDataAttributes::Yes);
+    auto const valid = result->set_a_configuration(configuration.get<Bindings::SanitizerConfig>(), AllowCommentsAndDataAttributes::Yes);
 
     // 3. If valid is false, then throw a TypeError.
     if (!valid)
@@ -46,7 +49,7 @@ void Sanitizer::initialize(JS::Realm& realm)
 }
 
 // https://wicg.github.io/sanitizer-api/#sanitizer-set-a-configuration
-bool Sanitizer::set_a_configuration(Bindings::SanitizerPresets, AllowCommentsAndDataAttributes)
+bool Sanitizer::set_a_configuration(Bindings::SanitizerConfig const&, AllowCommentsAndDataAttributes)
 {
     // 1. TODO Canonicalize configuration with allowCommentsPIsAndDataAttributes
     // 2. TODO If configuration is not valid, then return false.

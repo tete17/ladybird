@@ -2,8 +2,8 @@ Harness status: OK
 
 Found 66 tests
 
-30 Pass
-36 Fail
+41 Pass
+25 Fail
 Pass	idl_test setup
 Pass	idl_test validation
 Pass	Partial interface Element: original interface defined
@@ -45,27 +45,27 @@ Fail	Sanitizer interface: operation removeAttribute(SanitizerAttribute)
 Fail	Sanitizer interface: operation setComments(boolean)
 Fail	Sanitizer interface: operation setDataAttributes(boolean)
 Fail	Sanitizer interface: operation removeUnsafe()
-Fail	Sanitizer must be primary interface of new Sanitizer({})
-Fail	Stringification of new Sanitizer({})
+Pass	Sanitizer must be primary interface of new Sanitizer({})
+Pass	Stringification of new Sanitizer({})
 Fail	Sanitizer interface: new Sanitizer({}) must inherit property "get()" with the proper type
 Fail	Sanitizer interface: new Sanitizer({}) must inherit property "allowElement(SanitizerElementWithAttributes)" with the proper type
-Fail	Sanitizer interface: calling allowElement(SanitizerElementWithAttributes) on new Sanitizer({}) with too few arguments must throw TypeError
+Pass	Sanitizer interface: calling allowElement(SanitizerElementWithAttributes) on new Sanitizer({}) with too few arguments must throw TypeError
 Fail	Sanitizer interface: new Sanitizer({}) must inherit property "removeElement(SanitizerElement)" with the proper type
-Fail	Sanitizer interface: calling removeElement(SanitizerElement) on new Sanitizer({}) with too few arguments must throw TypeError
+Pass	Sanitizer interface: calling removeElement(SanitizerElement) on new Sanitizer({}) with too few arguments must throw TypeError
 Fail	Sanitizer interface: new Sanitizer({}) must inherit property "replaceElementWithChildren(SanitizerElement)" with the proper type
-Fail	Sanitizer interface: calling replaceElementWithChildren(SanitizerElement) on new Sanitizer({}) with too few arguments must throw TypeError
+Pass	Sanitizer interface: calling replaceElementWithChildren(SanitizerElement) on new Sanitizer({}) with too few arguments must throw TypeError
 Fail	Sanitizer interface: new Sanitizer({}) must inherit property "allowProcessingInstruction(SanitizerPI)" with the proper type
-Fail	Sanitizer interface: calling allowProcessingInstruction(SanitizerPI) on new Sanitizer({}) with too few arguments must throw TypeError
+Pass	Sanitizer interface: calling allowProcessingInstruction(SanitizerPI) on new Sanitizer({}) with too few arguments must throw TypeError
 Fail	Sanitizer interface: new Sanitizer({}) must inherit property "removeProcessingInstruction(SanitizerPI)" with the proper type
-Fail	Sanitizer interface: calling removeProcessingInstruction(SanitizerPI) on new Sanitizer({}) with too few arguments must throw TypeError
+Pass	Sanitizer interface: calling removeProcessingInstruction(SanitizerPI) on new Sanitizer({}) with too few arguments must throw TypeError
 Fail	Sanitizer interface: new Sanitizer({}) must inherit property "allowAttribute(SanitizerAttribute)" with the proper type
-Fail	Sanitizer interface: calling allowAttribute(SanitizerAttribute) on new Sanitizer({}) with too few arguments must throw TypeError
+Pass	Sanitizer interface: calling allowAttribute(SanitizerAttribute) on new Sanitizer({}) with too few arguments must throw TypeError
 Fail	Sanitizer interface: new Sanitizer({}) must inherit property "removeAttribute(SanitizerAttribute)" with the proper type
-Fail	Sanitizer interface: calling removeAttribute(SanitizerAttribute) on new Sanitizer({}) with too few arguments must throw TypeError
+Pass	Sanitizer interface: calling removeAttribute(SanitizerAttribute) on new Sanitizer({}) with too few arguments must throw TypeError
 Fail	Sanitizer interface: new Sanitizer({}) must inherit property "setComments(boolean)" with the proper type
-Fail	Sanitizer interface: calling setComments(boolean) on new Sanitizer({}) with too few arguments must throw TypeError
+Pass	Sanitizer interface: calling setComments(boolean) on new Sanitizer({}) with too few arguments must throw TypeError
 Fail	Sanitizer interface: new Sanitizer({}) must inherit property "setDataAttributes(boolean)" with the proper type
-Fail	Sanitizer interface: calling setDataAttributes(boolean) on new Sanitizer({}) with too few arguments must throw TypeError
+Pass	Sanitizer interface: calling setDataAttributes(boolean) on new Sanitizer({}) with too few arguments must throw TypeError
 Fail	Sanitizer interface: new Sanitizer({}) must inherit property "removeUnsafe()" with the proper type
 Fail	Document interface: operation parseHTML(DOMString, optional SetHTMLOptions)
 Fail	ShadowRoot interface: operation setHTML(DOMString, optional SetHTMLOptions)

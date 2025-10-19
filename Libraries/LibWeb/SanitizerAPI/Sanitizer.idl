@@ -4,8 +4,7 @@ enum SanitizerPresets { "default" };
 // https://wicg.github.io/sanitizer-api/#sanitizer
 [Exposed=Window]
 interface Sanitizer {
-    // TODO constructor(optional (SanitizerConfig or SanitizerPresets) configuration = "default");
-    constructor(optional SanitizerPresets configuration = "default");
+    constructor(optional (SanitizerConfig or SanitizerPresets) configuration = "default");
 
     // Query configuration:
     [FIXME] SanitizerConfig get();
