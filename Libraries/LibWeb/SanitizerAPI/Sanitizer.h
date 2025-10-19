@@ -15,6 +15,9 @@
 
 namespace Web::SanitizerAPI {
 
+// https://wicg.github.io/sanitizer-api/#typedefdef-sanitizerattribute
+using SanitizerAttribute = Variant<Utf16String, Bindings::SanitizerAttributeNamespace>;
+
 // https://wicg.github.io/sanitizer-api/#sanitizer
 class Sanitizer final : public Bindings::PlatformObject {
     WEB_PLATFORM_OBJECT(Sanitizer, Bindings::PlatformObject);
@@ -26,6 +29,9 @@ public:
 
     // https://wicg.github.io/sanitizer-api/#sanitizer-set-comments
     bool set_comments(bool);
+
+    // https://wicg.github.io/sanitizer-api/#sanitizer-set-data-attributes
+    bool set_data_attributes(bool);
 
 private:
     explicit Sanitizer(JS::Realm&);
@@ -43,5 +49,7 @@ private:
     // https://wicg.github.io/sanitizer-api/#sanitizer-configuration
     Bindings::SanitizerConfig m_configuration;
 };
+
+bool is_a_custom_data_attribute(SanitizerAttribute const& attribute);
 
 }
