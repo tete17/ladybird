@@ -77,7 +77,28 @@ GC::Ref<WebIDL::Promise> LockManager::request(Utf16String const& name, LockOptio
     // 10. Let promise be a new promise.
     auto const promise = WebIDL::create_promise(realm);
 
-    // [FIXME] 11. Request a lock with promise, the current agent, environment’s id, manager, callback, name, options["mode"], options["ifAvailable"], options["steal"], and options["signal"].
+    // 11. Request a lock with
+    //       promise,
+    //       the current agent,
+    //       environment’s id,
+    //       manager,
+    //       callback,
+    //       name,
+    //       options["mode"],
+    //       options["ifAvailable"],
+    //       options["steal"],
+    //       and options["signal"].
+    request_a_lock(
+        promise,
+        HTML::relevant_agent(*this),
+        environment.id,
+        manager.value(),
+        callback,
+        name,
+        options.mode.value(),
+        options.if_available.value(),
+        options.steal.value(),
+        options.signal);
 
     // 12. Return promise.
     return promise;
@@ -107,6 +128,28 @@ Optional<Impl::LockManager&> obtain_a_lock_manager(HTML::EnvironmentSettingsObje
     // 3. Let bottle be map’s associated storage bottle.
     // 4. Return bottle’s associated lock manager.
     return map->lock_manager();
+}
+
+// https://www.w3.org/TR/web-locks/#request-a-lock
+LockRequest request_a_lock(GC::Ref<WebIDL::Promise> promise, const HTML::Agent& agent, String const& client_id, Impl::LockManager& manager, GC::Ref<WebIDL::CallbackType> callback, Utf16String const& name, Bindings::LockMode mode, bool, bool, Optional<GC::Root<DOM::AbortSignal>>& signal)
+{
+    // 1. Let request be a new lock request (agent, clientId, manager, name, mode, callback, promise, signal).
+    auto request = LockRequest {
+        .agent = agent,
+        .client_id = client_id,
+        .manager = manager,
+        .name = name,
+        .mode = mode,
+        .callback = callback,
+        .promise = promise,
+        .signal = signal
+    };
+
+    // FIXME 2. If signal is present, then add the algorithm signal to abort the request request with signal to signal.
+    // FIXME 3. Enqueue the following steps to the lock task queue:
+
+    // 4. Return request.
+    return request;
 }
 
 }
