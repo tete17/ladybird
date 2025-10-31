@@ -1,0 +1,11 @@
+// https://www.w3.org/TR/web-locks/#lockmanager
+[SecureContext, Exposed=(Window,Worker)]
+interface LockManager {
+    [FIXME] Promise<any> request(DOMString name,
+                       LockGrantedCallback callback);
+    [FIXME] Promise<any> request(DOMString name,
+                       LockOptions options,
+                       LockGrantedCallback callback);
+
+    [FIXME] Promise<LockManagerSnapshot> query();
+};

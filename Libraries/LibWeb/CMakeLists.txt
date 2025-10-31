@@ -1069,6 +1069,7 @@ set(SOURCES
     WebIDL/OverloadResolution.cpp
     WebIDL/Promise.cpp
     WebIDL/Tracing.cpp
+    WebLocks/LockManager.cpp
     WebSockets/WebSocket.cpp
     WebVTT/VTTCue.cpp
     WebVTT/VTTRegion.cpp

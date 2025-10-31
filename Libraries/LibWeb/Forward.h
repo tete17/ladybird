@@ -1267,6 +1267,12 @@ struct InputState;
 
 };
 
+namespace Web::WebLocks {
+
+class LockManager;
+
+}
+
 namespace Web::WebSockets {
 
 class WebSocket;

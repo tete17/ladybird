@@ -93,6 +93,7 @@ static bool is_platform_object(Type const& type)
         "Instance"sv,
         "IntersectionObserverEntry"sv,
         "KeyframeEffect"sv,
+        "LockManager"sv,
         "MediaKeySystemAccess"sv,
         "MediaList"sv,
         "Memory"sv,
@@ -4974,6 +4975,7 @@ using namespace Web::WebAudio;
 using namespace Web::WebGL;
 using namespace Web::WebGL::Extensions;
 using namespace Web::WebIDL;
+using namespace Web::WebLocks;
 using namespace Web::WebVTT;
 using namespace Web::XHR;
 using namespace Web::XPath;
