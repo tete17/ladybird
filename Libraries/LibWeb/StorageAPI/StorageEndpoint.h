@@ -20,8 +20,9 @@ enum class StorageEndpointType : u8 {
     LocalStorage = 2,
     ServiceWorkerRegistrations = 3,
     SessionStorage = 4,
+    WebLocks = 5,
 
-    Count = 5 // This should always be the last value in the enum.
+    Count = 6 // This should always be the last value in the enum.
 };
 
 // https://storage.spec.whatwg.org/#storage-endpoint

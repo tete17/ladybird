@@ -4,11 +4,14 @@
  * SPDX-License-Identifier: BSD-2-Clause
  */
 
+#include "LibWeb/HTML/Scripting/Agent.h"
+
 #include <LibWeb/WebLocks/LockManager.h>
 
 #include <LibWeb/Bindings/Intrinsics.h>
 #include <LibWeb/DOM/AbortSignal.h>
 #include <LibWeb/HTML/Window.h>
+#include <LibWeb/StorageAPI/StorageBottle.h>
 
 namespace Web::WebLocks {
 
@@ -23,7 +26,7 @@ GC::Ref<WebIDL::Promise> LockManager::request(Utf16String const& name, GC::Ref<W
 }
 
 // https://www.w3.org/TR/web-locks/#dom-lockmanager-request
-GC::Ref<WebIDL::Promise> LockManager::request(Utf16String const& name, LockOptions options, GC::Ref<WebIDL::CallbackType>&)
+GC::Ref<WebIDL::Promise> LockManager::request(Utf16String const& name, LockOptions options, GC::Ref<WebIDL::CallbackType>& callback)
 {
     auto& realm = this->realm();
 
@@ -38,8 +41,11 @@ GC::Ref<WebIDL::Promise> LockManager::request(Utf16String const& name, LockOptio
     if (as<HTML::Window>(environment.global_object()).associated_document().is_fully_active())
         return WebIDL::create_rejected_promise(realm, WebIDL::InvalidStateError::create(realm, "Document is not fully active"_utf16));
 
-    // [FIXME] 4. Let manager be the result of obtaining a lock manager given environment.
+    // 4. Let manager be the result of obtaining a lock manager given environment.
     //    If that returned failure, then return a promise rejected with a "SecurityError" DOMException.
+    auto manager = obtain_a_lock_manager(environment);
+    if (!manager.has_value())
+        return WebIDL::create_rejected_promise(realm, WebIDL::SecurityError::create(realm, "Can't access the Lock Manager"_utf16));
 
     // 5. If name starts with U+002D HYPHEN-MINUS (-),
     //    then return a promise rejected with a "NotSupportedError" DOMException.
@@ -86,6 +92,21 @@ void LockManager::initialize(JS::Realm& realm)
 {
     WEB_SET_PROTOTYPE_FOR_INTERFACE(LockManager);
     Base::initialize(realm);
+}
+
+// https://www.w3.org/TR/web-locks/#obtain-a-lock-manager
+Optional<Impl::LockManager&> obtain_a_lock_manager(HTML::EnvironmentSettingsObject& environment)
+{
+    // 1. Let map be the result of obtaining a local storage bottle map given environment and "web-locks".
+    auto const map = StorageAPI::obtain_a_storage_bottle_map(StorageAPI::StorageType::Local, environment, StorageAPI::StorageEndpointType::WebLocks);
+
+    // 2. If map is failure, then return failure.
+    if (!map)
+        return {};
+
+    // 3. Let bottle be map’s associated storage bottle.
+    // 4. Return bottle’s associated lock manager.
+    return map->lock_manager();
 }
 
 }

@@ -13,6 +13,7 @@
 
 namespace Web::WebLocks {
 
+
 class Lock final : public Bindings::PlatformObject {
     WEB_PLATFORM_OBJECT(Lock, Bindings::PlatformObject);
     GC_DECLARE_ALLOCATOR(Lock);

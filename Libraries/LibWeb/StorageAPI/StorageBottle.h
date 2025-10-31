@@ -40,6 +40,8 @@ public:
 
     Optional<u64> quota() const { return m_quota; }
 
+    WebLocks::Impl::LockManager& lock_manager() { return m_lock_manager; }
+
 protected:
     explicit StorageBottle(Optional<u64> quota)
         : m_quota(quota)
@@ -47,6 +49,9 @@ protected:
     }
 
     Optional<u64> m_quota;
+
+    // https://www.w3.org/TR/web-locks/#lock-manager
+    WebLocks::Impl::LockManager m_lock_manager;
 };
 
 class LocalStorageBottle final : public StorageBottle {

@@ -8,11 +8,31 @@
 
 #include <LibJS/Forward.h>
 
+#include <AK/Queue.h>
 #include <AK/Utf16String.h>
 #include <LibWeb/Bindings/LockManagerPrototype.h>
 #include <LibWeb/Bindings/PlatformObject.h>
 
 namespace Web::WebLocks {
+
+// https://www.w3.org/TR/web-locks/#concept-lock-request
+struct LockRequest {
+};
+
+namespace Impl {
+
+// https://www.w3.org/TR/web-locks/#lock-manager
+struct LockManager {
+    AK_MAKE_NONCOPYABLE(LockManager);
+
+public:
+    LockManager() = default;
+
+    // https://www.w3.org/TR/web-locks/#ref-for-lock-manager%E2%91%A4
+    HashMap<Utf16String, Queue<LockRequest>> lock_request_queue_map;
+};
+
+}
 
 struct LockOptions {
     Optional<Bindings::LockMode> mode = Bindings::LockMode::Exclusive;
@@ -36,5 +56,8 @@ private:
     explicit LockManager(JS::Realm&);
     virtual void initialize(JS::Realm&) override;
 };
+
+// https://www.w3.org/TR/web-locks/#obtain-a-lock-manager
+Optional<Impl::LockManager&> obtain_a_lock_manager(HTML::EnvironmentSettingsObject& environment);
 
 }
