@@ -93,6 +93,7 @@ static bool is_platform_object(Type const& type)
         "Instance"sv,
         "IntersectionObserverEntry"sv,
         "KeyframeEffect"sv,
+        "Lock"sv,
         "LockManager"sv,
         "MediaKeySystemAccess"sv,
         "MediaList"sv,

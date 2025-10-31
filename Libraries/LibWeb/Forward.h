@@ -1269,6 +1269,7 @@ struct InputState;
 
 namespace Web::WebLocks {
 
+class Lock;
 class LockManager;
 
 }

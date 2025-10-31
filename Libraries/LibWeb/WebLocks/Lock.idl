@@ -1,0 +1,6 @@
+// https://www.w3.org/TR/web-locks/#lock
+[SecureContext, Exposed=(Window,Worker)]
+interface Lock {
+    [FIXME] readonly attribute DOMString name;
+    [FIXME] readonly attribute LockMode mode;
+};
