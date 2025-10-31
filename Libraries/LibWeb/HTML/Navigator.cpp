@@ -148,4 +148,10 @@ GC::Ref<MediaCapabilitiesAPI::MediaCapabilities> Navigator::media_capabilities()
     return *m_media_capabilities;
 }
 
+// https://www.w3.org/TR/web-locks/#dom-navigatorlocks-locks
+GC::Ref<WebLocks::LockManager> Navigator::locks() const
+{
+    return relevant_settings_object(*this).locks();
+}
+
 }

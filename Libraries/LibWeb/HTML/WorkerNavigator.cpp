@@ -62,4 +62,10 @@ GC::Ref<ServiceWorker::ServiceWorkerContainer> WorkerNavigator::service_worker()
     return *m_service_worker_container;
 }
 
+// https://www.w3.org/TR/web-locks/#dom-navigatorlocks-locks
+GC::Ref<WebLocks::LockManager> WorkerNavigator::locks() const
+{
+    return relevant_settings_object(*this).locks();
+}
+
 }

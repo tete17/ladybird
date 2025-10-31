@@ -18,6 +18,7 @@
 #include <LibWeb/Serial/Serial.h>
 #include <LibWeb/ServiceWorker/ServiceWorkerContainer.h>
 #include <LibWeb/StorageAPI/NavigatorStorage.h>
+#include <LibWeb/WebLocks/LockManager.h>
 
 namespace Web::HTML {
 
@@ -43,6 +44,9 @@ public:
     GC::Ref<MediaCapabilitiesAPI::MediaCapabilities> media_capabilities();
 
     [[nodiscard]] GC::Ref<Serial::Serial> serial();
+
+    // https://w3c.github.io/webappsec-credential-management/#framework-credential-management
+    GC::Ref<WebLocks::LockManager> locks() const;
 
 private:
     explicit WorkerNavigator(WorkerGlobalScope&);

@@ -9,3 +9,9 @@ interface LockManager {
 
     [FIXME] Promise<LockManagerSnapshot> query();
 };
+
+// https://www.w3.org/TR/web-locks/#navigatorlocks
+[SecureContext]
+interface mixin NavigatorLocks {
+    readonly attribute LockManager locks;
+};

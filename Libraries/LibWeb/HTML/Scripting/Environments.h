@@ -18,6 +18,7 @@
 #include <LibWeb/HTML/Scripting/ModuleMap.h>
 #include <LibWeb/HTML/Scripting/SerializedEnvironmentSettingsObject.h>
 #include <LibWeb/ServiceWorker/Registration.h>
+#include <LibWeb/WebLocks/LockManager.h>
 
 namespace Web::HTML {
 
@@ -138,6 +139,8 @@ public:
 
     virtual void discard_environment() override;
 
+    GC::Ref<WebLocks::LockManager> locks();
+
 protected:
     explicit EnvironmentSettingsObject(NonnullOwnPtr<JS::ExecutionContext>);
 
@@ -170,6 +173,10 @@ private:
     // https://w3c.github.io/ServiceWorker/#service-worker-client-discarded-flag
     // A service worker client has an associated discarded flag. It is initially unset.
     bool m_discarded { false };
+
+    // https://www.w3.org/TR/web-locks/#dom-navigatorlocks-locks
+    // Each environment settings object has a LockManager object.
+    GC::Ptr<WebLocks::LockManager> m_locks;
 };
 
 JS::ExecutionContext const& execution_context_of_realm(JS::Realm const&);

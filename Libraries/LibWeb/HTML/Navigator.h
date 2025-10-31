@@ -22,6 +22,7 @@
 #include <LibWeb/MediaCapabilitiesAPI/MediaCapabilities.h>
 #include <LibWeb/Serial/Serial.h>
 #include <LibWeb/StorageAPI/NavigatorStorage.h>
+#include <LibWeb/WebLocks/LockManager.h>
 
 namespace Web::HTML {
 
@@ -69,6 +70,9 @@ public:
     GC::Ref<ServiceWorker::ServiceWorkerContainer> service_worker();
 
     GC::Ref<MediaCapabilitiesAPI::MediaCapabilities> media_capabilities();
+
+    // https://w3c.github.io/webappsec-credential-management/#framework-credential-management
+    GC::Ref<WebLocks::LockManager> locks() const;
 
     static WebIDL::Long max_touch_points();
 

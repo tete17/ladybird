@@ -7,6 +7,7 @@
 #import <MediaCapabilitiesAPI/MediaCapabilities.idl>
 #import <Serial/Serial.idl>
 #import <StorageAPI/NavigatorStorage.idl>
+#import <WebLocks/LockManager.idl>
 
 // https://html.spec.whatwg.org/multipage/workers.html#workernavigator
 [Exposed=Worker]
@@ -28,3 +29,4 @@ WorkerNavigator includes NavigatorOnLine;
 WorkerNavigator includes NavigatorConcurrentHardware;
 WorkerNavigator includes NavigatorStorage;
 WorkerNavigator includes NavigatorDeviceMemory;
+WorkerNavigator includes NavigatorLocks;

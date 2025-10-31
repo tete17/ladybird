@@ -17,6 +17,7 @@
 #import <Serial/Serial.idl>
 #import <ServiceWorker/ServiceWorkerContainer.idl>
 #import <StorageAPI/NavigatorStorage.idl>
+#import <WebLocks/LockManager.idl>
 
 // https://html.spec.whatwg.org/multipage/system-state.html#navigator
 [Exposed=Window]
@@ -86,3 +87,4 @@ Navigator includes NavigatorConcurrentHardware;
 Navigator includes NavigatorAutomationInformation;
 Navigator includes NavigatorStorage;
 Navigator includes NavigatorDeviceMemory;
+Navigator includes NavigatorLocks;

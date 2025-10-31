@@ -76,6 +76,13 @@ void EnvironmentSettingsObject::discard_environment()
     set_discarded(true);
 }
 
+GC::Ref<WebLocks::LockManager> EnvironmentSettingsObject::locks()
+{
+    if (!m_locks)
+        m_locks = realm().create<WebLocks::LockManager>(realm());
+    return *m_locks;
+}
+
 JS::ExecutionContext& EnvironmentSettingsObject::realm_execution_context()
 {
     // NOTE: All environment settings objects are created with a realm execution context, so it's stored and returned here in the base class.
