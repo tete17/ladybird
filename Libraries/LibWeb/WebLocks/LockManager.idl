@@ -1,13 +1,30 @@
+#import <DOM/AbortSignal.idl>
+#import <WebLocks/Lock.idl>
+
 // https://www.w3.org/TR/web-locks/#lockmanager
 [SecureContext, Exposed=(Window,Worker)]
 interface LockManager {
-    [FIXME] Promise<any> request(DOMString name,
+    Promise<any> request(Utf16DOMString name,
                        LockGrantedCallback callback);
-    [FIXME] Promise<any> request(DOMString name,
+    Promise<any> request(Utf16DOMString name,
                        LockOptions options,
                        LockGrantedCallback callback);
 
     [FIXME] Promise<LockManagerSnapshot> query();
+};
+
+// https://www.w3.org/TR/web-locks/#callbackdef-lockgrantedcallback
+callback LockGrantedCallback = Promise<any> (Lock? lock);
+
+// https://www.w3.org/TR/web-locks/#enumdef-lockmode
+enum LockMode { "shared", "exclusive" };
+
+// https://www.w3.org/TR/web-locks/#dictdef-lockoptions
+dictionary LockOptions {
+    LockMode mode = "exclusive";
+    boolean ifAvailable = false;
+    boolean steal = false;
+    AbortSignal signal;
 };
 
 // https://www.w3.org/TR/web-locks/#navigatorlocks
