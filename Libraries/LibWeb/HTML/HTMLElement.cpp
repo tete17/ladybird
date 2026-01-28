@@ -285,12 +285,18 @@ struct RequiredLineBreakCount {
     int count { 0 };
 };
 
+struct CollapsibleString {
+    Utf16String string;
+    bool has_collapsible_whitespace { false };
+    bool is_preserve_breaks { false };
+};
+
 // https://html.spec.whatwg.org/multipage/dom.html#rendered-text-collection-steps
-static Vector<Variant<Utf16String, RequiredLineBreakCount>> rendered_text_collection_steps(DOM::Node const& node)
+static Vector<Variant<CollapsibleString, RequiredLineBreakCount>> rendered_text_collection_steps(DOM::Node const& node)
 {
     // 1. Let items be the result of running the rendered text collection steps with each child node of node in tree
     //    order, and then concatenating the results to a single list.
-    Vector<Variant<Utf16String, RequiredLineBreakCount>> items;
+    Vector<Variant<CollapsibleString, RequiredLineBreakCount>> items;
     node.for_each_child([&](auto const& child) {
         auto child_items = rendered_text_collection_steps(child);
         items.extend(move(child_items));
@@ -323,24 +329,55 @@ static Vector<Variant<Utf16String, RequiredLineBreakCount>> rendered_text_collec
     //    box after application of the CSS 'white-space' processing rules and 'text-transform' rules, set items to the
     //    list of the resulting strings, and return items.
 
-    //    FIXME: The CSS 'white-space' processing rules are slightly modified: collapsible spaces at the end of lines are
-    //    always collapsed, but they are only removed if the line is the last line of the block, or it ends with a br
-    //    element. Soft hyphens should be preserved. [CSSTEXT]
+    //    FIXME: Soft hyphens should be preserved. [CSSTEXT]
 
     if (auto const* layout_text_node = as_if<Layout::TextNode>(layout_node)) {
+        auto white_space_collapse = computed_values.white_space_collapse();
+        bool has_collapsible = white_space_collapse == CSS::WhiteSpaceCollapse::Collapse
+            || white_space_collapse == CSS::WhiteSpaceCollapse::PreserveBreaks;
+        bool is_preserve_breaks = white_space_collapse == CSS::WhiteSpaceCollapse::PreserveBreaks;
+
         Layout::TextNode::ChunkIterator iterator { *layout_text_node, false, false };
         while (true) {
             auto chunk = iterator.next();
             if (!chunk.has_value())
                 break;
-            items.append(Utf16String::from_utf16(chunk.release_value().view));
+            items.append(CollapsibleString {
+                .string = Utf16String::from_utf16(chunk.release_value().view),
+                .has_collapsible_whitespace = has_collapsible,
+                .is_preserve_breaks = is_preserve_breaks,
+            });
         }
         return items;
     }
 
+    // The CSS 'white-space' processing rules are slightly modified: collapsible spaces at the end of lines are
+    // always collapsed, but they are only removed if the line is the last line of the block, or it ends with a
+    // br element. [CSSTEXT]
+    // We implement this by trimming trailing whitespace before br elements and block boundaries, but only if
+    // the string item came from a text node with collapsible whitespace (tracked via metadata).
+    auto trim_trailing_collapsible_whitespace = [&items]() {
+        if (items.is_empty())
+            return;
+        if (!items.last().has<CollapsibleString>())
+            return;
+
+        auto& last = items.last().get<CollapsibleString>();
+        if (!last.has_collapsible_whitespace)
+            return;
+
+        // For preserve-breaks (pre-line), only trim spaces. For collapse, trim all whitespace.
+        auto trimmed_view = last.is_preserve_breaks
+            ? last.string.utf16_view().trim(" "sv, TrimMode::Right)
+            : last.string.utf16_view().trim_ascii_whitespace(TrimMode::Right);
+        if (trimmed_view.length_in_code_units() != last.string.length_in_code_units())
+            last.string = Utf16String::from_utf16(trimmed_view);
+    };
+
     // 5. If node is a br element, then append a string containing a single U+000A LF code point to items.
     if (is<HTML::HTMLBRElement>(node)) {
-        items.append("\n"_utf16);
+        trim_trailing_collapsible_whitespace();
+        items.append(CollapsibleString { .string = "\n"_utf16, .has_collapsible_whitespace = false });
         return items;
     }
 
@@ -348,20 +385,22 @@ static Vector<Variant<Utf16String, RequiredLineBreakCount>> rendered_text_collec
 
     // 6. If node's computed value of 'display' is 'table-cell', and node's CSS box is not the last 'table-cell' box of its enclosing 'table-row' box, then append a string containing a single U+0009 TAB code point to items.
     if (display.is_table_cell() && node.next_sibling())
-        items.append("\t"_utf16);
+        items.append(CollapsibleString { .string = "\t"_utf16, .has_collapsible_whitespace = false });
 
     // 7. If node's computed value of 'display' is 'table-row', and node's CSS box is not the last 'table-row' box of the nearest ancestor 'table' box, then append a string containing a single U+000A LF code point to items.
     if (display.is_table_row() && node.next_sibling())
-        items.append("\n"_utf16);
+        items.append(CollapsibleString { .string = "\n"_utf16, .has_collapsible_whitespace = false });
 
     // 8. If node is a p element, then append 2 (a required line break count) at the beginning and end of items.
     if (is<HTML::HTMLParagraphElement>(node)) {
+        trim_trailing_collapsible_whitespace();
         items.prepend(RequiredLineBreakCount { 2 });
         items.append(RequiredLineBreakCount { 2 });
     }
 
     // 9. If node's used value of 'display' is block-level or 'table-caption', then append 1 (a required line break count) at the beginning and end of items. [CSSDISPLAY]
     if (display.is_block_outside() || display.is_table_caption()) {
+        trim_trailing_collapsible_whitespace();
         items.prepend(RequiredLineBreakCount { 1 });
         items.append(RequiredLineBreakCount { 1 });
     }
@@ -379,7 +418,7 @@ Utf16String HTMLElement::get_the_text_steps()
         return descendant_text_content();
 
     // 2. Let results be a new empty list.
-    Vector<Variant<Utf16String, RequiredLineBreakCount>> results;
+    Vector<Variant<CollapsibleString, RequiredLineBreakCount>> results;
 
     // 3. For each child node node of element:
     for_each_child([&](Node const& node) {
@@ -395,7 +434,7 @@ Utf16String HTMLElement::get_the_text_steps()
     // 4. Remove any items from results that are the empty string.
     results.remove_all_matching([](auto& item) {
         return item.visit(
-            [](Utf16String const& string) { return string.is_empty(); },
+            [](CollapsibleString const& cs) { return cs.string.is_empty(); },
             [](RequiredLineBreakCount const&) { return false; });
     });
 
@@ -405,13 +444,27 @@ Utf16String HTMLElement::get_the_text_steps()
     while (!results.is_empty() && results.last().has<RequiredLineBreakCount>())
         results.take_last();
 
+    // Trim trailing collapsible whitespace from the last string item.
+    // This handles the "last line of block" case for the element we're getting innerText from.
+    // We use the metadata stored in CollapsibleString to determine if trimming is appropriate.
+    if (!results.is_empty() && results.last().has<CollapsibleString>()) {
+        auto& last = results.last().get<CollapsibleString>();
+        if (last.has_collapsible_whitespace) {
+            auto trimmed_view = last.is_preserve_breaks
+                ? last.string.utf16_view().trim(" "sv, TrimMode::Right)
+                : last.string.utf16_view().trim_ascii_whitespace(TrimMode::Right);
+            if (trimmed_view.length_in_code_units() != last.string.length_in_code_units())
+                last.string = Utf16String::from_utf16(trimmed_view);
+        }
+    }
+
     // 6. Replace each remaining run of consecutive required line break count items with a string consisting of as many
     //    U+000A LF code points as the maximum of the values in the required line break count items.
     StringBuilder builder(StringBuilder::Mode::UTF16);
     for (size_t i = 0; i < results.size(); ++i) {
         results[i].visit(
-            [&](Utf16String const& string) {
-                builder.append(string);
+            [&](CollapsibleString const& cs) {
+                builder.append(cs.string);
             },
             [&](RequiredLineBreakCount const& line_break_count) {
                 int max_line_breaks = line_break_count.count;

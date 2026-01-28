@@ -2,11 +2,11 @@ Harness status: OK
 
 Found 272 tests
 
-212 Pass
-60 Fail
+215 Pass
+57 Fail
 Pass	Simplest possible test ("<div>abc")
 Fail	Leading whitespace removed ("<div> abc")
-Fail	Trailing whitespace removed ("<div>abc ")
+Pass	Trailing whitespace removed ("<div>abc ")
 Pass	Internal whitespace compressed ("<div>abc  def")
 Pass	\n converted to space ("<div>abc\ndef")
 Pass	\r converted to space ("<div>abc\rdef")
@@ -33,7 +33,7 @@ Pass	\n preserved ("<span style='white-space:pre'>abc\ndef")
 Pass	\r converted to newline ("<span style='white-space:pre'>abc\rdef")
 Pass	\t preserved ("<span style='white-space:pre'>abc\tdef")
 Fail	Leading whitespace removed ("<div style='white-space:pre-line'> abc")
-Fail	Trailing whitespace removed ("<div style='white-space:pre-line'>abc ")
+Pass	Trailing whitespace removed ("<div style='white-space:pre-line'>abc ")
 Pass	Internal whitespace collapsed ("<div style='white-space:pre-line'>abc  def")
 Pass	\n preserved ("<div style='white-space:pre-line'>abc\ndef")
 Pass	\r converted to newline ("<div style='white-space:pre-line'>abc\rdef")
@@ -55,7 +55,7 @@ Fail	Whitespace between inline-grid and block should be collapsed ("<div><span s
 Pass	Whitespace around <img> should not be collapsed ("<div>abc <img> def")
 Pass	Whitespace around <img> should not be collapsed ("<div>abc <img width=1 height=1> def")
 Pass	Leading whitesapce should not be collapsed ("<div><img> abc")
-Pass	Trailing whitesapce should not be collapsed ("<div>abc <img>")
+Fail	Trailing whitesapce should not be collapsed ("<div>abc <img>")
 Fail	Whitespace around empty span should be collapsed ("<div>abc <b></b> def")
 Fail	Whitespace around empty spans should be collapsed ("<div>abc <b><i></i></b> def")
 Pass	<canvas> should not collapse following space ("<div><canvas></canvas> abc")
@@ -94,8 +94,8 @@ Pass	child of display:none child of svg ("<div style='display:none'><div id='tar
 Pass	display:contents container ("<div style='display:contents'>abc")
 Pass	display:contents container ("<div><div style='display:contents'>abc")
 Pass	display:contents rendered ("<div>123<span style='display:contents'>abc")
-Fail	display:contents not processed via textContent ("<div style='display:contents'>   ")
-Fail	display:contents not processed via textContent ("<div><div style='display:contents'>   ")
+Pass	display:contents not processed via textContent ("<div style='display:contents'>   ")
+Pass	display:contents not processed via textContent ("<div><div style='display:contents'>   ")
 Pass	visibility:hidden container ("<div style='visibility:hidden'>abc")
 Pass	visibility:hidden child not rendered ("<div>123<span style='visibility:hidden'>abc")
 Pass	visibility:visible child rendered ("<div style='visibility:hidden'>123<span style='visibility:visible'>abc")
