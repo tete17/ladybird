@@ -1533,6 +1533,103 @@ GC::Ref<WebIDL::Promise> SubtleCrypto::decapsulate_bits(AlgorithmIdentifier deca
     return promise;
 }
 
+// https://wicg.github.io/webcrypto-modern-algos/#dfn-SubtleCrypto-method-supports
+bool SubtleCrypto::supports(JS::VM&, Utf16String const& operation, AlgorithmIdentifier const& algorithm, Optional<u32> length_optional)
+{
+    // 1. If operation is not one of "encrypt", "decrypt", "sign", "verify", "digest", "generateKey", "deriveKey", "deriveBits",
+    //    "importKey", "exportKey", "wrapKey", "unwrapKey", "encapsulateKey", "encapsulateBits", "decapsulateKey",
+    //    "decapsulateBits" or "getPublicKey", return false.
+    if (operation != "encrypt"_utf16
+        && operation != "decrypt"_utf16
+        && operation != "sign"_utf16
+        && operation != "verify"_utf16
+        && operation != "digest"_utf16
+        && operation != "generateKey"_utf16
+        && operation != "deriveKey"_utf16
+        && operation != "deriveBits"_utf16
+        && operation != "importKey"_utf16
+        && operation != "exportKey"_utf16
+        && operation != "wrapKey"_utf16
+        && operation != "unwrapKey"_utf16
+        && operation != "encapsulateKey"_utf16
+        && operation != "encapsulateBits"_utf16
+        && operation != "decapsulateKey"_utf16
+        && operation != "decapsulateBits"_utf16
+        && operation != "getPublicKey"_utf16) {
+        return false;
+    }
+
+    // FIXME: 2. Return the result of checking support for an algorithm, with op set to operation, alg set to algorithm, and
+    //           length set to length.
+    (void)algorithm;
+    (void)length_optional;
+    return false;
+}
+
+// https://wicg.github.io/webcrypto-modern-algos/#dfn-SubtleCrypto-method-supports-additionalAlgorithm
+bool SubtleCrypto::supports(JS::VM& vm, Utf16String operation, AlgorithmIdentifier const& algorithm, AlgorithmIdentifier const& additional_algorithm)
+{
+    auto& realm = vm.realm();
+
+    // 1. If operation is not one of "encrypt", "decrypt", "sign", "verify", "digest", "generateKey", "deriveKey", "deriveBits",
+    //    "importKey", "exportKey", "wrapKey", "unwrapKey", "encapsulateKey", "encapsulateBits", "decapsulateKey",
+    //    "decapsulateBits" or "getPublicKey", return false.
+    if (operation != "encrypt"_utf16
+        && operation != "decrypt"_utf16
+        && operation != "sign"_utf16
+        && operation != "verify"_utf16
+        && operation != "digest"_utf16
+        && operation != "generateKey"_utf16
+        && operation != "deriveKey"_utf16
+        && operation != "deriveBits"_utf16
+        && operation != "importKey"_utf16
+        && operation != "exportKey"_utf16
+        && operation != "wrapKey"_utf16
+        && operation != "unwrapKey"_utf16
+        && operation != "encapsulateKey"_utf16
+        && operation != "encapsulateBits"_utf16
+        && operation != "decapsulateKey"_utf16
+        && operation != "decapsulateBits"_utf16
+        && operation != "getPublicKey"_utf16) {
+        return false;
+    }
+
+    // 2. => If operation is "deriveKey", "unwrapKey", "encapsulateKey" or "decapsulateKey":
+    if (operation == "deriveKey"_utf16 || operation == "unwrapKey"_utf16 || operation == "encapsulateKey"_utf16 || operation == "decapsulateKey"_utf16) {
+        // FIXME: If the result of checking support for an algorithm with op set to "importKey" and alg set to
+        //        additionalAlgorithm is false, return false.
+    }
+    //    => If operation is "wrapKey":
+    else if (operation != "wrapKey"_utf16) {
+        // FIXME: If the result of checking support for an algorithm with op set to "exportKey" and alg set to
+        //        additionalAlgorithm is false, return false.
+    }
+
+    // 3. Let length be null
+    auto length = Optional<u32> {};
+
+    // 4. => If operation is "deriveKey":
+    if (operation == "deriveKey"_utf16) {
+        // FIXME: 1. If the result of checking support for an algorithm with op set to "get key length" and alg set to
+        //           additionalAlgorithm is false, return false.
+
+        // 2. Let normalizedAdditionalAlgorithm be the result of normalizing an algorithm, with alg set to
+        //    additionalAlgorithm and op set to "get key length".
+        auto const normalized_additional_algorithm = MUST(normalize_an_algorithm(realm, additional_algorithm, "get key length"_string));
+
+        // 3. Let length be the result of performing the get key length algorithm specified by
+        //    additionalAlgorithm using normalizedAdditionalAlgorithm.
+        length = MUST(MUST(normalized_additional_algorithm.methods->get_key_length(*normalized_additional_algorithm.parameter)).to_u32(vm));
+
+        // 4. Set operation to "deriveBits".
+        operation = "deriveBits"_utf16;
+    }
+
+    // FIXME: 5. Return the result of checking support for an algorithm, with op set to operation, alg set to algorithm, and length set to
+    //           length.
+    (void)algorithm;
+    return false;
+}
 SupportedAlgorithmsMap& supported_algorithms_internal()
 {
     static SupportedAlgorithmsMap s_supported_algorithms;

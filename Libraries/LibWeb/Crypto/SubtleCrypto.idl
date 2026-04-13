@@ -85,4 +85,7 @@ interface SubtleCrypto {
     Promise<EncapsulatedBits> encapsulateBits(AlgorithmIdentifier encapsulationAlgorithm, CryptoKey encapsulationKey);
     Promise<CryptoKey> decapsulateKey(AlgorithmIdentifier decapsulationAlgorithm, CryptoKey decapsulationKey, BufferSource ciphertext, AlgorithmIdentifier sharedKeyAlgorithm, boolean extractable, sequence<KeyUsage> keyUsages);
     Promise<ArrayBuffer> decapsulateBits(AlgorithmIdentifier decapsulationAlgorithm, CryptoKey decapsulationKey, BufferSource ciphertext);
+
+    static boolean supports(Utf16DOMString operation, AlgorithmIdentifier algorithm, optional unsigned long? length = null);
+    static boolean supports(Utf16DOMString operation, AlgorithmIdentifier algorithm, AlgorithmIdentifier additionalAlgorithm);
 };
