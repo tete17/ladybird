@@ -55,6 +55,8 @@ public:
 private:
     explicit SubtleCrypto(JS::Realm&);
     virtual void initialize(JS::Realm&) override;
+
+    static bool check_support_for_an_algorithm(Utf16String op, AlgorithmIdentifier const& alg, Optional<u32> length_optional);
 };
 
 struct NormalizedAlgorithmAndParameter {

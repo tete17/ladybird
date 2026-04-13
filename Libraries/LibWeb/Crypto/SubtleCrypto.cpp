@@ -62,6 +62,46 @@ void SubtleCrypto::initialize(JS::Realm& realm)
     Base::initialize(realm);
 }
 
+// https://wicg.github.io/webcrypto-modern-algos/#dfn-check-support-for-algorithm
+bool SubtleCrypto::check_support_for_an_algorithm(Utf16String op, AlgorithmIdentifier const& alg, Optional<u32>)
+{
+    // 1. If op is "encapsulateKey" or "encapsulateBits", set op to "encapsulate".
+    if (op == "encapsulateKey"_utf16 || op == "encapsulateBits"_utf16)
+        op = "encapsulate"_utf16;
+
+    // 2. If op is "decapsulateKey" or "decapsulateBits", set op to "decapsulate".
+    if (op == "decapsulateKey"_utf16 || op == "decapsulateBits"_utf16)
+        op = "decapsulate"_utf16;
+
+    // 3. => if op is "getPublicKey"
+    if (op == "getPublicKey"_utf16) {
+        // FIXME: We don't support getPublicKey yet
+        return false;
+    }
+
+    // 4. Let normalizedAlgorithm be the result of normalizing an algorithm, with alg set to alg and op set to op.
+    auto maybe_normalized_algorithm = normalize_an_algorithm({}, alg, op.to_utf8());
+
+    // 5. => if an error occurred:
+    if (maybe_normalized_algorithm.is_error()) {
+        // 1. If op is "wrapKey", return the result of checking support for an algorithm with op set to "encrypt"
+        //    and alg set to alg.
+        if (op == "wrapKey"_utf16)
+            return check_support_for_an_algorithm("encrypt"_utf16, alg, {});
+
+        // 2. If op is "unwrapKey", return the result of checking support for an algorithm with op set to "decrypt"
+        //    and alg set to alg.
+        if (op == "unwrapKey"_utf16)
+            return check_support_for_an_algorithm("decrypt"_utf16, alg, {});
+
+        // 3. Otherwise, return false.
+        return false;
+    }
+    auto const normalized_algorithm = maybe_normalized_algorithm.release_value();
+
+    return false;
+}
+
 // https://w3c.github.io/webcrypto/#dfn-normalize-an-algorithm
 WebIDL::ExceptionOr<NormalizedAlgorithmAndParameter> normalize_an_algorithm(JS::Realm& realm, AlgorithmIdentifier const& algorithm, String operation)
 {
@@ -1559,11 +1599,9 @@ bool SubtleCrypto::supports(JS::VM&, Utf16String const& operation, AlgorithmIden
         return false;
     }
 
-    // FIXME: 2. Return the result of checking support for an algorithm, with op set to operation, alg set to algorithm, and
-    //           length set to length.
-    (void)algorithm;
-    (void)length_optional;
-    return false;
+    // 2. Return the result of checking support for an algorithm, with op set to operation, alg set to algorithm, and
+    //    length set to length.
+    return check_support_for_an_algorithm(operation, algorithm, length_optional);
 }
 
 // https://wicg.github.io/webcrypto-modern-algos/#dfn-SubtleCrypto-method-supports-additionalAlgorithm
@@ -1596,13 +1634,17 @@ bool SubtleCrypto::supports(JS::VM& vm, Utf16String operation, AlgorithmIdentifi
 
     // 2. => If operation is "deriveKey", "unwrapKey", "encapsulateKey" or "decapsulateKey":
     if (operation == "deriveKey"_utf16 || operation == "unwrapKey"_utf16 || operation == "encapsulateKey"_utf16 || operation == "decapsulateKey"_utf16) {
-        // FIXME: If the result of checking support for an algorithm with op set to "importKey" and alg set to
-        //        additionalAlgorithm is false, return false.
+        // If the result of checking support for an algorithm with op set to "importKey" and alg set to
+        // additionalAlgorithm is false, return false.
+        if (!check_support_for_an_algorithm("importKey"_utf16, additional_algorithm, {}))
+            return false;
     }
     //    => If operation is "wrapKey":
     else if (operation != "wrapKey"_utf16) {
-        // FIXME: If the result of checking support for an algorithm with op set to "exportKey" and alg set to
-        //        additionalAlgorithm is false, return false.
+        // If the result of checking support for an algorithm with op set to "exportKey" and alg set to
+        // additionalAlgorithm is false, return false.
+        if (!check_support_for_an_algorithm("exportKey"_utf16, additional_algorithm, {}))
+            return false;
     }
 
     // 3. Let length be null
@@ -1610,8 +1652,10 @@ bool SubtleCrypto::supports(JS::VM& vm, Utf16String operation, AlgorithmIdentifi
 
     // 4. => If operation is "deriveKey":
     if (operation == "deriveKey"_utf16) {
-        // FIXME: 1. If the result of checking support for an algorithm with op set to "get key length" and alg set to
-        //           additionalAlgorithm is false, return false.
+        // 1. If the result of checking support for an algorithm with op set to "get key length" and alg set to
+        //    additionalAlgorithm is false, return false.
+        if (!check_support_for_an_algorithm("get key length"_utf16, additional_algorithm, {}))
+            return false;
 
         // 2. Let normalizedAdditionalAlgorithm be the result of normalizing an algorithm, with alg set to
         //    additionalAlgorithm and op set to "get key length".
@@ -1625,10 +1669,9 @@ bool SubtleCrypto::supports(JS::VM& vm, Utf16String operation, AlgorithmIdentifi
         operation = "deriveBits"_utf16;
     }
 
-    // FIXME: 5. Return the result of checking support for an algorithm, with op set to operation, alg set to algorithm, and length set to
-    //           length.
-    (void)algorithm;
-    return false;
+    // 5. Return the result of checking support for an algorithm, with op set to operation, alg set to algorithm, and length set to
+    //    length.
+    return check_support_for_an_algorithm(operation, algorithm, length);
 }
 SupportedAlgorithmsMap& supported_algorithms_internal()
 {
