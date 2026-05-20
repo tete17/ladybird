@@ -3684,7 +3684,8 @@ static ByteString dictionary_union_default_value_expression(Context const& conte
 
 static ByteString dictionary_default_value_expression(Context const& context, Type const& type, ByteString const& default_value)
 {
-    auto cpp_type = idl_type_name_to_cpp_type(type, context).name;
+    auto inner_type = clone_type(type, false);
+    auto cpp_type = idl_type_name_to_cpp_type(*inner_type, context).name;
 
     if (is<UnionType>(type))
         return dictionary_union_default_value_expression(context, as<UnionType>(type), default_value);
